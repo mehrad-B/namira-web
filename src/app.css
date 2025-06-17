@@ -1,2 +1,25 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
+
+.lang-fa {
+	font-family: 'Vazirmatn', sans-serif;
+}
+
+.lang-en {
+	font-family: 'Roboto', sans-serif;
+}
+
+.mono-font {
+	font-family: 'Fira Mono', monospace;
+	font-weight: 400;
+	font-style: normal;
+}
+
+.hide-scrollbar {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+	display: none;
+}
