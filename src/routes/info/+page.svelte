@@ -20,7 +20,9 @@
 				<h1 class="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">نامیرا نت</h1>
 			</div>
 			<br />
+			<h1 class="text-lg font-semibold text-white sm:text-xl lg:text-2xl">نگارش ۱.۰.۰</h1>
 		</div>
+		<br />
 		<div class="flex flex-col rounded-lg bg-white p-4 text-justify">
 			<p>
 				لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک
@@ -128,7 +130,7 @@
 				<div class="mt-4 flex w-full flex-row-reverse items-center justify-center gap-2">
 					<p
 						dir="ltr"
-						class="w-full rounded-lg border-2 border-dashed border-gray-400 bg-gray-200 p-2 font-mono"
+						class="w-full truncate rounded-lg border-2 border-dashed border-gray-400 bg-gray-200 p-2 font-mono"
 					>
 						{#if selectedcurrency === 'btc'}
 							<span>{btcWallet}</span>
@@ -206,7 +208,7 @@
 		viewBox="0 0 24 24"
 		stroke-width="1.5"
 		stroke="currentColor"
-		class="size-6"
+		class="size-8 lg:size-10"
 	>
 		<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
 	</svg>

@@ -15,11 +15,11 @@
 	font-style: normal;
 }
 
-.hide-scrollbar {
+* {
 	scrollbar-width: none;
 	-ms-overflow-style: none;
 }
 
-.hide-scrollbar::-webkit-scrollbar {
+*::-webkit-scrollbar {
 	display: none;
 }

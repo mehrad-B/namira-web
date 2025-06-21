@@ -3,7 +3,7 @@ export type TestResult = {
 	status: 'error' | 'success';
 	delay_ms: number;
 	error?: string;
-	protocol: string;
+	protocol: 'vmess' | 'vless' | 'trojan' | 'ss';
 	raw_config: string;
 };
 
