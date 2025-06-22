@@ -1,7 +1,7 @@
 {
-	"name": "Namira Net",
-	"description": "",
-	"short_name": "Soroush Alinia",
+	"name": "NaMira Net",
+	"description": "Namira: Always Connected. Always Free",
+	"short_name": "NaMira",
 	"display": "standalone",
 	"start_url": "/",
 	"background_color": "#ffffff",
