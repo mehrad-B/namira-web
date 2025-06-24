@@ -1,10 +1,11 @@
 export type TestResult = {
-	index: number;
 	status: 'error' | 'success';
 	delay_ms: number;
-	error?: string;
 	protocol: 'vmess' | 'vless' | 'trojan' | 'ss';
+	country_code: string;
+	remark: string;
 	raw_config: string;
+	server: string;
 };
 
 export type JobResult = {

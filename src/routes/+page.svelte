@@ -2,7 +2,7 @@
 	import type { PageProps } from './$types';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { fade, fly } from 'svelte/transition';
-	import { toPersianDigits } from '$lib/utils';
+	import { countryCodeToEmoji, toPersianDigits } from '$lib/utils';
 	import type { JobResult, TestResult } from '$lib/types';
 
 	let { data }: PageProps = $props();
@@ -88,6 +88,7 @@
 		dialog: boolean;
 		accordion: AccordionState;
 		selectedConfig: string | null;
+		selectedRemark: string | null;
 		activeProtocol: TestResult['protocol'] | null;
 		page: number;
 	};
@@ -115,6 +116,7 @@
 			copied: false
 		},
 		selectedConfig: null,
+		selectedRemark: null,
 		activeProtocol: null,
 		page: 1
 	});
@@ -142,12 +144,11 @@
 		return filteredResult;
 	}
 	function sortByPing(results: TestResult[]): TestResult[] {
-		return [...results].sort((a, b) => b.delay_ms - a.delay_ms);
+		return [...results].sort((a, b) => a.delay_ms - b.delay_ms);
 	}
 
 	function paginateResults<T>(results: T[], page: number): T[] {
 		if (page < 0 || PAGINATION_SIZE < 1) return [];
-		// const startIndex = page * PAGINATION_SIZE;
 		const endIndex = 0 + PAGINATION_SIZE * page;
 		return results.slice(0, endIndex);
 	}
@@ -249,6 +250,7 @@
 					onclick={() => {
 						state.dialog = false;
 						state.selectedConfig = null;
+						state.selectedRemark = null;
 					}}
 				>
 					<svg
@@ -264,6 +266,7 @@
 				</button>
 			</div>
 			<h1 class="text-3xl font-bold text-white">اتصال کانفیگ</h1>
+			<p class="font-mono text-white">{state.selectedRemark}</p>
 			<div class=" mt-4 flex h-full w-full flex-col space-y-4 overflow-x-scroll p-4">
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
@@ -508,6 +511,7 @@
 			onclick={() => {
 				state.dialog = false;
 				state.selectedConfig = null;
+				state.selectedRemark = null;
 			}}
 		></div>
 	</div>
@@ -583,88 +587,67 @@
 		{/if}
 		{#if state.data !== null}
 			<div class="space-y-3">
-				{#each paginateResults(prepareResults(state.data.results), state.page) as r (r.index)}
+				{#each paginateResults(prepareResults(state.data.results), state.page) as r, index}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<div
 						onclick={() => {
 							state.dialog = true;
 							state.selectedConfig = r.raw_config;
+							state.selectedRemark = r.remark;
 						}}
 						class="flex flex-col justify-between gap-3 rounded-lg bg-white p-4 transition-transform duration-300 hover:scale-105"
 					>
 						<div class="flex flex-row gap-2">
 							<div class="flex w-full flex-row items-center gap-2">
-								<p>سرور {toPersianDigits(r.index)}</p>
+								<p>سرور {toPersianDigits(index + 1)}</p>
 								<p class="rounded-full bg-gray-300 px-2 py-1 text-xs font-bold">
-									🇺🇸 | <span class="font-mono">192.168.1.1</span>
+									{#if countryCodeToEmoji(r.country_code) !== null}
+										{countryCodeToEmoji(r.country_code)} |
+									{/if}
+									<span class="font-mono">{r.server}</span>
 								</p>
 							</div>
-							<p class="rounded-full bg-gray-300 px-2 py-1 text-xs font-bold">
-								{r.protocol}
+							<p
+								class="rounded-full px-2 py-1 text-xs font-bold whitespace-nowrap"
+								class:bg-red-100={r.protocol === 'ss'}
+								class:text-red-600={r.protocol === 'ss'}
+								class:bg-blue-100={r.protocol === 'trojan'}
+								class:text-blue-600={r.protocol === 'trojan'}
+								class:bg-purple-100={r.protocol === 'vless'}
+								class:text-purple-600={r.protocol === 'vless'}
+								class:bg-green-100={r.protocol === 'vmess'}
+								class:text-green-600={r.protocol === 'vmess'}
+							>
+								پروتکل: <span class="font-mono">{r.protocol}</span>
 							</p>
-							{#if r.error === undefined}
-								<div
-									class="flex flex-row items-center gap-1 rounded-full bg-green-400 px-2 py-1 text-white"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke-width="1.5"
-										stroke="currentColor"
-										class="size-4"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z"
-										/>
-									</svg>
-									<p class="text-xs font-bold">فعال</p>
-								</div>{:else}
-								<div
-									class="flex flex-row items-center gap-1 rounded-full bg-red-500 px-2 py-1 text-white"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke-width="1.5"
-										stroke="currentColor"
-										class="size-4"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
-										/>
-									</svg>
-
-									<p class="text-xs font-bold">غیرفعال</p>
-								</div>
-							{/if}
 						</div>
 						<div class="flex flex-row items-center justify-between gap-2 text-sm">
-							<p class="text-gray-600">
-								تاخیر: {r.error ? 'بدون پاسخ' : `${toPersianDigits(r.delay_ms)} میلی‌ثانیه`}
+							<p
+								class={r.delay_ms < 600
+									? 'text-green-600'
+									: r.delay_ms < 1000
+										? 'text-yellow-500/90'
+										: 'text-red-600'}
+							>
+								تاخیر: {toPersianDigits(r.delay_ms)} میلی ثانیه
 							</p>
 							<button
 								class="flex flex-row items-center justify-between gap-2 rounded-lg border border-gray-300 px-2 py-1"
-								class:border-green-300={state.copiedIndex === r.index}
-								class:text-green-700={state.copiedIndex === r.index}
+								class:border-green-300={state.copiedIndex === index}
+								class:text-green-700={state.copiedIndex === index}
 								onclick={async (event: MouseEvent) => {
 									event.stopPropagation();
 									try {
 										await navigator.clipboard.writeText(r.raw_config);
-										state.copiedIndex = r.index;
+										state.copiedIndex = index;
 										setTimeout(() => (state.copiedIndex = null), 5000);
 									} catch (err) {
 										console.error('Failed to copy:', err);
 									}
 								}}
 							>
-								{#if state.copiedIndex === r.index}
+								{#if state.copiedIndex === index}
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										fill="none"
@@ -697,7 +680,7 @@
 										/>
 									</svg>{/if}
 
-								{#if state.copiedIndex === r.index}
+								{#if state.copiedIndex === index}
 									<p>کپی شد</p>
 								{:else}
 									<p>کپی کردن کانفیگ</p>

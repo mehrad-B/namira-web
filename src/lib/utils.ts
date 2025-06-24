@@ -36,3 +36,15 @@ export async function decryptAESGCM(
 
 	return new TextDecoder().decode(decryptedBuffer);
 }
+
+export function countryCodeToEmoji(code: string): string | null {
+	if (!/^[A-Z]{2}$/i.test(code)) return null;
+	const OFFSET = 127397;
+	const upperCode = code.toUpperCase();
+
+	try {
+		return [...upperCode].map((char) => String.fromCodePoint(char.charCodeAt(0) + OFFSET)).join('');
+	} catch {
+		return null;
+	}
+}
