@@ -175,7 +175,7 @@
 		>
 			<div class="h-2 w-1/2 rounded-full bg-gray-300/10 backdrop-blur-lg md:w-1/4"></div>
 			<div class="flex w-full flex-col gap-2 px-2 py-2 lg:px-8">
-				<h1 class="text-center text-lg font-bold text-white sm:text-2xl">انتخاب پروتکل</h1>
+				<h1 class="text-center text-2xl font-bold text-white">انتخاب پروتکل</h1>
 			</div>
 			<div class="mx-auto w-full max-w-4xl space-y-2">
 				<button
@@ -266,7 +266,7 @@
 				</button>
 			</div>
 			<h1 class="text-3xl font-bold text-white">اتصال کانفیگ</h1>
-			<p class="font-mono text-white">{state.selectedRemark}</p>
+			<p class="text-center font-mono whitespace-break-spaces text-white">{state.selectedRemark}</p>
 			<div class=" mt-4 flex h-full w-full flex-col space-y-4 overflow-x-scroll p-4">
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
@@ -581,7 +581,9 @@
 			</div>
 		{/if}
 		{#if state.error}
-			<div class="flex h-[100px] flex-col rounded-lg border border-red-400 bg-red-200 p-4">
+			<div
+				class="flex h-auto flex-col rounded-lg border border-red-400 bg-red-200 p-6 text-center text-xl text-red-800"
+			>
 				<p>{state.error}</p>
 			</div>
 		{/if}
@@ -598,18 +600,25 @@
 						}}
 						class="flex flex-col justify-between gap-3 rounded-lg bg-white p-4 transition-transform duration-300 hover:scale-105"
 					>
-						<div class="flex flex-row gap-2">
-							<div class="flex w-full flex-row items-center gap-2">
-								<p>سرور {toPersianDigits(index + 1)}</p>
-								<p class="rounded-full bg-gray-300 px-2 py-1 text-xs font-bold">
+						<p class="text-center text-lg whitespace-nowrap sm:hidden">
+							سرور {toPersianDigits(index + 1)}
+						</p>
+						<div class="flex w-full flex-row justify-between gap-2">
+							<div class="flex max-w-full min-w-0 flex-row items-center gap-2">
+								<p class="hidden whitespace-nowrap sm:block">سرور {toPersianDigits(index + 1)}</p>
+								<p
+									class="truncate overflow-hidden rounded-full bg-gray-300 px-2 py-1 text-xs font-bold"
+									dir="rtl"
+								>
+									<!-- <span class="font-mono">{r.server}</span> -->
 									{#if countryCodeToEmoji(r.country_code) !== null}
 										{countryCodeToEmoji(r.country_code)} |
 									{/if}
-									<span class="font-mono">{r.server}</span>
+									<span class="font-mono" dir="ltr">{r.server}</span>
 								</p>
 							</div>
 							<p
-								class="rounded-full px-2 py-1 text-xs font-bold whitespace-nowrap"
+								class="min-w-fit rounded-full px-2 py-1 text-xs font-bold whitespace-nowrap"
 								class:bg-red-100={r.protocol === 'ss'}
 								class:text-red-600={r.protocol === 'ss'}
 								class:bg-blue-100={r.protocol === 'trojan'}
@@ -622,7 +631,7 @@
 								پروتکل: <span class="font-mono">{r.protocol}</span>
 							</p>
 						</div>
-						<div class="flex flex-row items-center justify-between gap-2 text-sm">
+						<div class="flex flex-row items-center justify-between gap-2 text-sm whitespace-nowrap">
 							<p
 								class={r.delay_ms < 600
 									? 'text-green-600'
@@ -633,7 +642,7 @@
 								تاخیر: {toPersianDigits(r.delay_ms)} میلی ثانیه
 							</p>
 							<button
-								class="flex flex-row items-center justify-between gap-2 rounded-lg border border-gray-300 px-2 py-1"
+								class="flex flex-row items-center justify-between gap-2 rounded-lg border border-gray-300 px-2 py-1 whitespace-nowrap"
 								class:border-green-300={state.copiedIndex === index}
 								class:text-green-700={state.copiedIndex === index}
 								onclick={async (event: MouseEvent) => {
