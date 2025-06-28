@@ -4,8 +4,8 @@
 	"short_name": "NaMira",
 	"display": "standalone",
 	"start_url": "/",
-	"background_color": "#ffffff",
-	"theme_color": "#ffffff",
+	"background_color": "#FBF4E7",
+	"theme_color": "#078284",
 	"icons": [
 		{
 			"src": "android-chrome-192x192.png",
