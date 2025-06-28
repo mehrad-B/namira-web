@@ -3,79 +3,16 @@
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { fade, fly } from 'svelte/transition';
 	import { countryCodeToEmoji, toPersianDigits } from '$lib/utils';
-	import type { JobResult, TestResult } from '$lib/types';
+	import {
+		downloads,
+		platformLabels,
+		type JobResult,
+		type Platform,
+		type TestResult
+	} from '$lib/types';
+	import Navbar from '../components/navbar.svelte';
 
 	let { data }: PageProps = $props();
-
-	type Platform = 'windows' | 'mac' | 'linux' | 'android' | 'ios';
-
-	type DownloadLink = {
-		name: string;
-		url: string;
-	};
-
-	type DownloadMap = Record<Platform, DownloadLink[]>;
-	type PlatformLabelMap = Record<Platform, string>;
-	const downloads: DownloadMap = {
-		android: [
-			{
-				name: 'V2rayNG',
-				url: 'https://github.com/2dust/v2rayNG/releases/download/1.10.4/v2rayNG_1.10.4_universal.apk'
-			},
-			{
-				name: 'NekoBox',
-				url: 'https://github.com/MatsuriDayo/NekoBoxForAndroid/releases/download/1.3.9/NekoBox-1.3.9-arm64-v8a.apk'
-			}
-		],
-		ios: [
-			{
-				name: 'Streisand',
-				url: 'https://apps.apple.com/us/app/streisand/id6450534064'
-			},
-			{
-				name: 'Shadowrocket',
-				url: 'https://apps.apple.com/us/app/shadowrocket/id932747118'
-			}
-		],
-		windows: [
-			{
-				name: 'V2rayN',
-				url: 'https://github.com/2dust/v2rayN/releases/download/7.12.5/v2rayN-windows-64-SelfContained.zip'
-			},
-			{
-				name: 'Nekoray',
-				url: 'https://github.com/MatsuriDayo/nekoray/releases/download/4.0.1/nekoray-4.0.1-2024-12-12-windows64.zip'
-			}
-		],
-		mac: [
-			{
-				name: 'V2rayN برای مک ARM',
-				url: 'https://github.com/2dust/v2rayN/releases/download/7.12.5/v2rayN-macos-arm64.dmg'
-			},
-			{
-				name: 'v2rayN برای مک Intel',
-				url: 'https://github.com/2dust/v2rayN/releases/download/7.12.5/v2rayN-macos-64.dmg'
-			}
-		],
-		linux: [
-			{
-				name: 'V2rayN برای لینوکس',
-				url: 'https://github.com/2dust/v2rayN/releases/download/7.12.5/v2rayN-linux-64.zip'
-			},
-			{
-				name: 'Nekoray',
-				url: 'https://github.com/MatsuriDayo/nekoray/releases/download/4.0.1/nekoray-4.0.1-2024-12-12-linux64.zip'
-			}
-		]
-	};
-
-	const platformLabels: PlatformLabelMap = {
-		windows: 'ویندوز',
-		mac: 'مک',
-		linux: 'لینوکس',
-		android: 'اندروید',
-		ios: 'iOS'
-	};
 
 	const PAGINATION_SIZE: number = 10;
 
@@ -166,12 +103,14 @@
 	}
 </script>
 
+<Navbar></Navbar>
+
 {#if state.menu}
-	<div class="fixed z-30 flex h-screen w-screen flex-col-reverse">
+	<div class="fixed z-50 flex h-screen w-screen flex-col-reverse">
 		<div
 			in:fly={{ y: 300, duration: 300, easing: cubicOut }}
 			out:fly={{ y: 300, duration: 300, easing: cubicIn }}
-			class="absolute flex max-h-3/4 w-full flex-col items-center gap-4 overflow-y-auto rounded-t-lg border-0 bg-white/10 p-3 backdrop-blur-2xl"
+			class="absolute z-50 flex max-h-3/4 w-full flex-col items-center gap-4 overflow-y-auto rounded-t-lg border-0 bg-white/10 p-3 backdrop-blur-2xl"
 		>
 			<div class="h-2 w-1/2 rounded-full bg-gray-300/10 backdrop-blur-lg md:w-1/4"></div>
 			<div class="flex w-full flex-col gap-2 px-2 py-2 lg:px-8">
@@ -237,11 +176,11 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 {#if state.dialog}
-	<div class="fixed z-30 flex h-screen w-screen flex-col">
+	<div class="fixed z-50 flex h-screen w-screen flex-col">
 		<div
 			in:fly={{ y: 300, duration: 300, easing: cubicOut }}
 			out:fly={{ y: 300, duration: 300, easing: cubicIn }}
-			class="absolute top-1/2 left-1/2 flex max-h-[90vh] w-[90vw] max-w-[1024px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-4 overflow-y-auto rounded-lg bg-white/10 p-3 backdrop-blur-2xl"
+			class="absolute top-1/2 left-1/2 z-50 flex max-h-[90vh] w-[90vw] max-w-[1024px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-4 overflow-y-auto rounded-lg bg-white/10 p-3 backdrop-blur-2xl"
 		>
 			<div class="flex w-full flex-row">
 				<!-- svelte-ignore a11y_consider_explicit_label -->
@@ -519,7 +458,7 @@
 
 <!-- svelte-ignore a11y_consider_explicit_label -->
 <button
-	class="fixed right-4 bottom-4 z-20 rounded-full bg-orange-400 p-4 text-white shadow-2xl"
+	class="fixed right-4 bottom-24 z-20 rounded-full bg-orange-400 p-4 text-white shadow-2xl"
 	onclick={() => {
 		state.menu = true;
 	}}
@@ -540,28 +479,7 @@
 	</svg>
 </button>
 
-<!-- svelte-ignore a11y_consider_explicit_label -->
-<a
-	href="/info"
-	class="fixed right-4 bottom-24 z-20 rounded-full bg-blue-400 p-4 text-white shadow-2xl"
->
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		fill="none"
-		viewBox="0 0 24 24"
-		stroke-width="1.5"
-		stroke="currentColor"
-		class="size-8 lg:size-10"
-	>
-		<path
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
-		/>
-	</svg>
-</a>
-
-<div class="flex w-screen justify-center">
+<div class="mb-12 flex w-screen justify-center">
 	<div class="w-full max-w-4xl px-4 py-12">
 		<div class="text-center">
 			<div class="flex flex-row items-center justify-center gap-6">

@@ -19,6 +19,7 @@
 			class="absolute right-20 bottom-20 h-28 w-28 animate-bounce rounded-full bg-blue-300/15 blur-xl"
 		></div>
 	</div>
+
 	<div class="hide-scrollbar relative z-10">
 		{@render children()}
 	</div>
