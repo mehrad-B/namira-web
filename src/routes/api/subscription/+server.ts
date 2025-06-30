@@ -2,9 +2,17 @@ import type { RequestHandler } from '@sveltejs/kit';
 import axios from 'axios';
 import { SECRET_KEY, API_URL } from '$env/static/private';
 import { base64ToUint8Array, decryptAESGCM } from '$lib/utils';
-import type { JobResult } from '$lib/types';
+import type { JobResult, TestResult } from '$lib/types';
 
-export const GET: RequestHandler = async () => {
+export const GET: RequestHandler = async (event) => {
+	const params = event.url.searchParams;
+	const limitParam = params.get('limit');
+	const protocolParam = params.get('protocol');
+	const sortParam = params.get('sort');
+
+	const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+	const protocol = protocolParam ?? undefined;
+	const sortDesc = sortParam === 'true';
 	try {
 		const response = await axios.get<string>(API_URL);
 		const base64Data = response.data.trim();
@@ -17,8 +25,21 @@ export const GET: RequestHandler = async () => {
 
 		const decryptedJson = await decryptAESGCM(encryptedBytes, keyBytes);
 		const jobResult = JSON.parse(decryptedJson) as JobResult;
+		let results: TestResult[] = jobResult.results;
 
-		const rawConfigs = jobResult.results.map((r) => r.raw_config).join('\n');
+		if (protocol) {
+			results = results.filter((r) => r.protocol === protocol);
+		}
+
+		if (sortDesc) {
+			results = results.sort((a, b) => b.delay_ms - a.delay_ms);
+		}
+
+		if (typeof limit === 'number' && limit >= 0) {
+			results = results.slice(0, limit);
+		}
+
+		const rawConfigs = results.map((r) => r.raw_config).join('\n');
 		const encoded = Buffer.from(rawConfigs, 'utf-8').toString('base64');
 		return new Response(encoded, {
 			headers: { 'Content-Type': 'text/plain; charset=utf-8' }
