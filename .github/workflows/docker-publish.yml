@@ -1,0 +1,48 @@
+name: Build and Push Docker Image to GHCR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine image tag
+        id: vars
+        run: |
+          TAG=$(git describe --tags --exact-match 2>/dev/null || true)
+          if [[ "$TAG" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Using version tag: $TAG"
+            echo "tag=${TAG#v}" >> $GITHUB_OUTPUT
+          else
+            TIMESTAMP=$(date -u +'%Y%m%d%H%M%S')
+            echo "No version tag, using timestamp: $TIMESTAMP"
+            echo "tag=$TIMESTAMP" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.tag }}
