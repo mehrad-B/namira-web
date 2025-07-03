@@ -295,6 +295,8 @@ export const GET: RequestHandler = async (event) => {
 		if (limitParam !== null) {
 			const limit = parseInRange(limitParam) as number;
 			results = results.slice(0, limit);
+		} else {
+			results = results.slice(0, 100);
 		}
 
 		const rawConfigs = results.map((r) => r.raw_config).join('\n');
