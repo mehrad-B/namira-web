@@ -2,7 +2,8 @@
 	import { fade } from 'svelte/transition';
 	import Navbar from '../../components/navbar.svelte';
 
-	const subLink = 'https://namira-web.vercel.app/api/subscription';
+	import { page } from '$app/state';
+	const subLink = `${page.url.origin}/api/subscription`;
 	type AccordionState = {
 		android: boolean;
 		ios: boolean;

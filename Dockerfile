@@ -14,8 +14,6 @@ RUN pnpm build
 
 FROM node:22-alpine AS runtime
 
-RUN apk --no-cache add curl wireguard-tools
-
 WORKDIR /app
 
 COPY --from=builder /app/build ./build
