@@ -12,7 +12,7 @@
 				<h1 class="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">نامیرا نت</h1>
 			</div>
 			<br />
-			<h1 class="text-lg font-semibold text-white sm:text-xl lg:text-2xl">نگارش ۱.۰.۰</h1>
+			<h1 class="text-lg font-semibold text-white sm:text-xl lg:text-2xl">نگارش ۱.۱.۰</h1>
 		</div>
 		<br />
 		<div class="flex flex-col rounded-lg bg-white p-4 text-justify leading-7">
