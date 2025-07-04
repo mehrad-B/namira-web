@@ -15,8 +15,21 @@ const limiter = new RateLimiter({
 });
 
 export async function handle({ event, resolve }) {
+	const originalGetClientAddress = event.getClientAddress;
+	event.getClientAddress = () => {
+		return event.request.headers.get('CF-Connecting-IP') || originalGetClientAddress();
+	};
+
 	if (await limiter.isLimited(event)) {
-		return new Response('Too many requests', { status: 429 });
+		return new Response('Too many requests', {
+			status: 429,
+			headers: {
+				'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+				Pragma: 'no-cache',
+				Expires: '0',
+				'Surrogate-Control': 'no-store'
+			}
+		});
 	}
 	return resolve(event);
 }
