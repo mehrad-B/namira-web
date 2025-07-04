@@ -52,6 +52,7 @@ docker run -d \
   -p 4500:80 \
   -e API_URL=https://your.backend.url/results.txt \
   -e SECRET_KEY=YOUR_SECRET_KEY \
+  -e RATELIMIT_SECRET=YOUR_SECRET_KEY \
   xerodl:namira-web
 ```
 
@@ -66,15 +67,17 @@ docker run -d \
   -p 80:80 \
   -e API_URL=https://your.backend.url/results.txt \
   -e SECRET_KEY=YOUR_SECRET_KEY \
+  -e RATELIMIT_SECRET=YOUR_SECRET_KEY \
   namira-web
 ```
 
 ## ⚙️ Environment Variables
 
-| Variable     | Required | Description                                      |
-| ------------ | -------- | ------------------------------------------------ |
-| `API_URL`    | ✅       | Remote URL to fetch VPN test results (plaintext) |
-| `SECRET_KEY` | ✅       | Must match the backend's encryption key          |
+| Variable           | Required | Description                                      |
+| ------------------ | -------- | ------------------------------------------------ |
+| `API_URL`          | ✅       | Remote URL to fetch VPN test results (plaintext) |
+| `SECRET_KEY`       | ✅       | Must match the backend's encryption key          |
+| `RATELIMIT_SECRET` | ✅       | Secret key for rate limit hook                   |
 
 # 📝 LICENSE
 
